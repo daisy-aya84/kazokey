@@ -1,0 +1,98 @@
+<div class="container_group">
+	<div class="content">
+		<div class="group_name">
+			<h1><%= @this_group.name %></h1>
+		</div>
+	</div>
+	
+	<div class="content">
+		<h2>メンバー</h2>
+			<% @this_group.users.each do |user| %>
+			<ul>
+				<li><%= user.name %></li>	
+			</ul>
+			<%end%>
+	</div>
+
+	<div class="content">
+	<h2>することを追加する</h2>
+	
+		<form action="/groups/<%= @this_group.id %>/tasks/create" method="post">
+			<input type="text" name="name" placeholder="すること" style="width:500px;height:40px;font-size:2em;">
+			<br>
+			<br>
+			<textarea name="memo" cols="24" rows="3" placeholder="メモ"></textarea>
+			<input type="submit" value="することを追加する">
+		</form>
+	</div>	
+	
+	<div class="content">		
+		<h2>すること一覧</h2>
+		
+		<% if @this_group.tasks.empty? %>
+			することはありません
+		<% else %>
+			
+			<table style="width: 100%;text-align:center;">
+				<tr>
+					<th>すること</th>
+					<th class="ikuze">やる人</th>
+					<th class="memo">メモ</th>
+					<th class="ikuze"></th>
+					<th class="ikuze"></th>
+				</tr>
+				
+				<% @this_group.tasks.each do |task| %>
+					
+					<tr>
+						<td><%= task.name %></td>
+						<td>
+							<%if task.users.empty? %>
+								<form action="/groups/<%= @this_group.id %>/tasks/<%= task.id %>/users/add" method="post">
+									<select name="user_id">
+										<% @this_group.users.each do |user| %>
+											<option value = <%= user.id %>><%= user.name %></option>
+										<% end %>
+									</select>
+									<input type="submit" value="この人がやるよ">
+								</form>
+							<% else %>
+								<% task.users.each do |user| %>
+								<%= user.name %>
+								<% end %>
+							<% end %>	
+							
+						</td>
+						<td class="memo_v1">
+							<p class="memo_v1"><%= task.memo %></p>
+							<form action="/groups/<%= @this_group.id %>/tasks/<%= task.id %>/memo/change" method="post"
+							style="padding:0px;">
+								<textarea name="memo" cols="12" rows="3" placeholder="<%= task.memo %>" 
+								style="margin: 0px; height:70px; width:150px;"></textarea><br>
+								<input type="submit" value="メモを更新する">	
+							</form>
+							<br>
+						</td>
+						<td class="DONE">
+							<% if task.complete==false %>
+								<form action="/groups/<%= @this_group.id %>/tasks/<%= task.id %>/done" method="post">
+									<input type="submit" value="終わったら押す">
+								</form>
+							<% elsif task.complete==true %>
+								<form action="/groups/<%= @this_group.id %>/tasks/<%= task.id %>/done" method="post">
+									<input type="submit" value="終わった!">
+								</form>
+							<% end %>
+						</td>
+						<td class="DONE">
+							<form action="/groups/<%= @this_group.id %>/tasks/<%= task.id %>/delete" method="post">
+								<input type="submit" value="タスクを消す">
+							</form>		
+						</td>
+					</tr>
+					
+				<% end %>
+			<% end %>
+		</table>
+	</div>
+</div>

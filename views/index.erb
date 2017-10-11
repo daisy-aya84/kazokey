@@ -1,0 +1,100 @@
+<% if !current_user.nil? %>
+    <nav>
+        <ul class="content">
+            <li><%= current_user.name %> さんのマイページ|</li>
+            <li><a class="logout" href="/logout"> ログアウト</a></li>
+        </ul>
+    </nav>
+    
+<div class="container">
+    <div class="content">
+        
+        <h2><%= current_user.name %>のやること</h2>
+        <br>
+        <% if current_user.tasks.empty? %>
+            やることはありません！
+        <% else %>
+        
+        <table style="width: 100%;text-align:center;">
+            
+            <tr>
+                <th>やること</th>
+                <th>status</th>
+                
+            </tr>
+            
+            <% current_user.tasks.each do |task| %>
+            
+            <tr>
+                <td><%= task.name %></td>
+            
+                <td>
+                    <% if task.complete==false %>
+						<form action="/users/tasks/<%= task.id %>/done" method="post">
+							<input type="submit" value="終わったら押す">
+						</form>
+					<% elsif task.complete==true %>
+						<form action="/users/tasks/<%= task.id %>/done" method="post">
+							<input type="submit" value="終わった!">
+						</form>
+					<% end %>	
+				</td>
+            </tr>    
+            <% end %>
+            
+        </table>
+        
+        <% end %>
+        
+        <br>
+        
+        <h2>所属しているグループ</h2>
+            <% current_user.groups.each do |group| %>
+            <ul>
+                <li><a href ="/groups/<%=group.id%>"><%= group.name %></a></li>
+            </ul>
+            <% end %>
+        
+        <h2>グループの追加</h2>
+            <form action ="/groups/new" method="post">
+                <input type="text" name="name" placeholder="グループの名前">
+                <input type="password" name="aikotoba" placeholder="あいことば">
+                <input type="submit" value="送信">
+            </form>
+
+        <h2>グループ一覧</h2>
+        
+        <table>
+            
+        <%  @groups.each do |group| %>
+            <tr>
+                <td><%= group.name %> </td>
+                <td>
+                    <form action="/users/<%= current_user.id %>/groups/<%= group.id %>/add" method="post">
+                    <input name="aikotoba" type="password" placeholder="あいことばを記入">
+                    <input type="submit" value="参加する">
+                    </form>
+                </td>
+            </tr>
+            
+        <% end %>
+        
+    </div>
+
+<% else %>
+<div class="form-wrapper">
+    <h1>新規ユーザーですか？</h1>
+    <div class="button-panel">
+        <div class="link-button">
+            <a href="/signin" style="text-decoration: none;">ログイン</a>
+        </div>
+        <br>
+        <div class="link-button">
+            <a href="/signup" style="text-decoration: none;">新規登録</a>
+        </div>
+    </div>
+    <br>
+    <br>
+</div>
+<% end %>
+</div>
