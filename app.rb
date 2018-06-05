@@ -48,7 +48,7 @@ post '/signup' do
        ) 
        
     if user.persisted?
-        session[:user] = user.id
+        session[:user]  = user.id
     end
     
     redirect '/'

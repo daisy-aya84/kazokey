@@ -7,7 +7,7 @@ gem 'sinatra-contrib'
 gem 'rake'
 gem 'sinatra-activerecord'
 
-gem 'bcrypt'
+gem 'bcrypt' #ユーザー認証用のジェム
 
 group :development do
 	gem 'sqlite3'
